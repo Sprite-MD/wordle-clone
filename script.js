@@ -30,3 +30,65 @@ function create_grid(){
 }
 
 create_grid()
+
+
+// Onscreen keyboard implementation
+keyboard = document.querySelector('.keyboard')
+
+keyboard.addEventListener("click", (e) => {
+    const target = e.target
+
+    if (!target.classList.contains("keyboard_btn")) {
+        return
+    }
+
+    let key = target.textContent
+
+    if (key == "Del"){
+        key = "Backspace"
+    }
+
+    document.dispatchEvent(new KeyboardEvent('keyup', {'key': key}))
+
+})
+
+// User input
+let attempts = 0
+let nextLetter = 0
+let currentGuess = []
+
+document.addEventListener('keyup', (e) => {
+
+    if (attempts > 5){
+        return
+    }
+
+    let letter = String(e.key)
+    if (letter === 'Backspace' && nextLetter !== 0){
+        deleteLetter()
+        return
+    }
+
+    if (letter === 'Enter'){
+        checkGuess()
+    }
+
+    
+})
+
+function deleteLetter(){
+    pass
+}
+
+function checkGuess(){
+    pass
+}
+
+// Wordlist
+let wordList = []
+
+fetch('./wordlist.txt')
+.then(response => response.text())
+.then(data => wordList.push(data.split(/\r\n/)))
+
+console.log(wordList)
