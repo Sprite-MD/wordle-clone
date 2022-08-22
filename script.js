@@ -52,7 +52,6 @@ keyboard.addEventListener("click", (e) => {
   if (key === "Del") {
     key = "Backspace";
   }
-  console.log(key, key === "Del");
 
   document.dispatchEvent(new KeyboardEvent("keyup", { key: key }));
 });
@@ -61,7 +60,7 @@ keyboard.addEventListener("click", (e) => {
 let attempts = 0;
 let numOfLetters = 0;
 let currentGuess = [];
-let solution = wordList[Math.floor(Math.random() * wordList.length)];
+let correctGuess = wordList[Math.floor(Math.random() * wordList.length)];
 
 document.addEventListener("keyup", (e) => {
   if (attempts > 5) {
@@ -78,8 +77,8 @@ document.addEventListener("keyup", (e) => {
     checkGuess();
   }
 
-  let found = letter.match(/[a-z]/gi);
-  if (!found || found.length > 1) {
+  let matchedLetter = letter.match(/[a-z]/gi);
+  if (!matchedLetter || matchedLetter.length > 1) {
     return;
   } else {
     insertLetter(letter);
@@ -93,11 +92,14 @@ function deleteLetter() {
   numOfLetters -= 1;
 }
 
+// WIP
 function checkGuess() {
   let currentAttempt = cellGrid[attempts];
-  let guess = "";
+  let guess = "";    
+  let correctGuessCopy = Array.from(correctGuess)
 
-  for (letter in currentGuess) {
+
+  for (letter of currentGuess) {
     guess += letter;
   }
 
@@ -107,9 +109,48 @@ function checkGuess() {
 
   if (!wordList.includes(guess)) {
     alert("Word isn't in list");
+    console.log(guess);
   }
 
-  console.log(guess);
+  for (i = 0; i < 5; i++) {
+    let cellColor = "";
+    let currentCell = currentAttempt[i];
+    // let currentLetter = currentGuess[i];
+
+    let letterIndex = correctGuessCopy.indexOf(currentGuess[i]);
+
+    if (letterIndex === -1) {
+      cellColor = "grey";
+      } else {
+      if (currentGuess[i] === correctGuessCopy[i]) {
+        cellColor = "green";
+      } else {
+        cellColor = "yellow";
+      }
+
+      correctGuessCopy[letterIndex] = "-";
+    }
+
+    console.log(currentCell)
+    setTimeout(() => {
+      currentCell.style.backgroundColor = cellColor
+    }, 200)
+  }
+
+  if (guess === correctGuess){
+    attempts = 5;
+    alert("CORRECT!");
+    return
+  } else {
+    attempts += 1;
+    currentGuess = [];
+    numOfLetters = 0;
+
+    if (attempts > 5){
+      alert(`The word was ${correctGuess}!`)
+    }
+  }
+  
 }
 
 function insertLetter(letter) {
