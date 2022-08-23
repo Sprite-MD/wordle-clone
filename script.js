@@ -95,9 +95,8 @@ function deleteLetter() {
 // WIP
 function checkGuess() {
   let currentAttempt = cellGrid[attempts];
-  let guess = "";    
-  let correctGuessCopy = Array.from(correctGuess)
-
+  let guess = "";
+  let correctGuessCopy = Array.from(correctGuess);
 
   for (letter of currentGuess) {
     guess += letter;
@@ -115,13 +114,13 @@ function checkGuess() {
   for (i = 0; i < 5; i++) {
     let cellColor = "";
     let currentCell = currentAttempt[i];
-    // let currentLetter = currentGuess[i];
+    let currentLetter = currentGuess[i];
 
     let letterIndex = correctGuessCopy.indexOf(currentGuess[i]);
 
     if (letterIndex === -1) {
       cellColor = "grey";
-      } else {
+    } else {
       if (currentGuess[i] === correctGuessCopy[i]) {
         cellColor = "green";
       } else {
@@ -131,26 +130,26 @@ function checkGuess() {
       correctGuessCopy[letterIndex] = "-";
     }
 
-    console.log(currentCell)
+    console.log(currentCell);
     setTimeout(() => {
-      currentCell.style.backgroundColor = cellColor
-    }, 200)
+      currentCell.style.backgroundColor = cellColor;
+      shadeOnscreenKeyboard(currentLetter, cellColor);
+    }, 200 * i);
   }
 
-  if (guess === correctGuess){
+  if (guess === correctGuess) {
     attempts = 5;
     alert("CORRECT!");
-    return
+    return;
   } else {
     attempts += 1;
     currentGuess = [];
     numOfLetters = 0;
 
-    if (attempts > 5){
-      alert(`The word was ${correctGuess}!`)
+    if (attempts > 5) {
+      alert(`The word was ${correctGuess}!`);
     }
   }
-  
 }
 
 function insertLetter(letter) {
@@ -162,4 +161,24 @@ function insertLetter(letter) {
   currentCell.textContent = letter;
   currentGuess.push(letter);
   numOfLetters += 1;
+}
+
+function shadeOnscreenKeyboard(currentLetter, color) {
+  for (button of document.getElementsByClassName("keyboard_btn")) {
+    if (button.textcontent === currentLetter) {
+      let currentColor = button.style.backgroundColor;
+
+      if (currentColor === "green") {
+        return;
+      }
+
+      if (currentColor === "yellow" && color !== "green") {
+        return;
+      }
+
+      button.style.backgroundColor = color;
+      break;
+    }
+    console.log(document.getElementsByClassName("keyboard_btn"));
+  }
 }
